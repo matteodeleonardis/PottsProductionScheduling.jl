@@ -1,0 +1,13 @@
+name = "PottsProductionScheduling"
+uuid = "14e5a3a8-54b3-48e7-a2dc-d9c858be7609"
+authors = ["Matteo De Leonardis <matteo.deleonardis2@gmail.com> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
