@@ -1,7 +1,7 @@
 struct Agent
-    T::Int
-    M::Int
-    N::Int
+    T::Int #time horizon
+    M::Int #number of machines
+    N::Int #number of goods
     σ::Matrix{Int} #actions σ[m, t]  ∈ {1,...,N}
 end
 
