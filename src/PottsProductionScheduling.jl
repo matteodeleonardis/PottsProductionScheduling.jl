@@ -1,5 +1,9 @@
 module PottsProductionScheduling
+    include("environment.jl")
+    include("agent.jl")
+    include("common.jl")
+    include("optimize.jl")
 
-# Write your package code here.
+    export Environment, Agent, step_cost
 
 end
