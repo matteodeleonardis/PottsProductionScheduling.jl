@@ -8,7 +8,7 @@ struct Environment
 end
 
 
-function Environment(t, m, n, a, j, h = rand(t, n))
-    return Environment(t, m, n, h, a .* ones(t, n, n), j .* ones(t, n, n))
+function Environment(t::Int, m::Int, n::Int, a::Int, j::Int, h = abs.(rand(t, n)))
+    return Environment(t, m, n, h, a .* ones(m, t, n, n), j .* ones(m, m, t, n, n))
 end
 
