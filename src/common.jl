@@ -4,3 +4,8 @@ function step_cost(env, σt1, σt2, t)
         sum([sum([env.J[m, n, t, σt1[m], σt1[n]] for n ∈ m+1:env.M]) for m ∈ 1:env.M-1])
 end
 
+
+function cost(env, agent)
+    sum([step_cost(env, agent.σ[t,:], agent.σ[t+1,:], t) for t ∈ 1:agent.T-1])
+end
+
