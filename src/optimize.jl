@@ -20,7 +20,7 @@ function optimize(env)
     for t in env.T:-1:2
         optimal_actions[t-1] = traceback_actions[t-1, optimal_actions[t]]
     end
-    return optimal_cost, map(x->int2vec(x, env.N, env.M), optimal_actions), R
+    return optimal_cost, map(x->int2vec(x, env.N, env.M), optimal_actions)
 end
 
     
