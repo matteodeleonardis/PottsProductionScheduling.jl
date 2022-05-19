@@ -3,8 +3,8 @@ function production_step_cost(env, σt1, σt2, t)
         sum([sum([env.J[m, n, t, σt1[m], σt1[n]] for n ∈ m+1:env.M]) for m ∈ 1:env.M-1]) 
 end
 
-function step_cost(env, demand, σt1, σt2, t)
-    production_step_cost(env, σt1, σt2, t) + sum(env.I[t,:] .* expected_storage(demand, σt1))
+function step_cost(env, demand, inventory, σt1, σt2, t)
+    production_step_cost(env, σt1, σt2, t) + sum(env.I[t,:] .* (inventory .+ expected_storage(demand, σt1)))
 end
 
 
