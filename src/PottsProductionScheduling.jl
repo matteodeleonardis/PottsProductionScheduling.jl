@@ -1,7 +1,5 @@
 module PottsProductionScheduling
 
-    using LinearAlgebra
-
     include("demand.jl")
     include("environment.jl")
     include("agent.jl")
