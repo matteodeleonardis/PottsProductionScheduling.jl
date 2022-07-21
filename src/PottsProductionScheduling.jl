@@ -1,5 +1,7 @@
 module PottsProductionScheduling
 
+    using Flux, LinearAlgebra, Tullio, Distributions, SpecialFunctions
+
     include("demand.jl")
     include("environment.jl")
     include("agent.jl")
@@ -8,8 +10,9 @@ module PottsProductionScheduling
     include("utils.jl")
     
 
-    export Environment, Agent, step_cost, optimize, cost
-    export GeometricDemand
+    export Environment, randomEnvironment, Agent
+    export production_cost, switching_cost, coupling_cost, inventory_cost, total_cost, compute_inventory, compute_expected_inventory
+    export PoissonDemand
 
     #exporting only for debugging
     export base10_conv, baseN_conv, vec2int, int2vec

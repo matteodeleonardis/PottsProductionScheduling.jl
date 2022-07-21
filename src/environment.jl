@@ -2,14 +2,16 @@ struct Environment
     T::Int #time horizon
     M::Int #number of machines
     N::Int #number of goods
-    h::Matrix{Float64} #cost of products (production cost - reward)  h[t,s]
-    A::Array{Float64, 4} #switching cost A[m, t, s_m_t, s_m_t+1]
-    J::Array{Float64, 5} #machines couplings J[m, n, t, s_m, s_n]
-    I::Matrix{Float64} #I[t, s] cost for storing and item of good s
+    h::Matrix{Float64} #cost of products h[a, t]
+    A::Array{Float64, 3} #switching cost A[a, b, t]
+    J::Array{Float64, 3} #machines couplings J[a, b, t]
+    I::Matrix{Float64} #I[a, t] cost for storing and item of good a
 end
 
-
-function Environment(t::Int, m::Int, n::Int, a::Int, j::Int, h::Matrix{Float64}, I::Matrix{Float64}) 
-    return Environment(t, m, n, h, a .* ones(m, t, n, n), j .* ones(m, m, t, n, n), I)
+function randomEnvironment(time_horizon::Int, machines::Int, goods::Int, switching_cost::Float64, coupling::Float64)
+    return Environment(time_horizon, machines, goods, 
+        randn(goods, time_horizon), 
+        fill(switching_cost, goods, goods, time_horizon-1), 
+        fill(coupling, goods, goods, time_horizon), 
+        randn(goods, time_horizon)) 
 end
-
