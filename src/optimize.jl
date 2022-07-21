@@ -1,30 +1,38 @@
-function optimize(env, demand::D) where {D <: Demand}
-    @assert env.N == length(demand.α)
-    action_space =  env.N ^ env.M
-    R = zeros(env.T-1, action_space)
-    traceback_actions = zeros(Int, env.T-1, action_space) 
-    inventory = zeros(env.T-1, env.N, action_space)
-    #recursion initialization
-    for i in 1:action_space
-        R[1, i], traceback_actions[1, i] = findmin([step_cost(env, demand, zeros(Int, env.N), int2vec(x, env.N, env.M), int2vec(i, env.N, env.M), 1) for x in 1:action_space])
-        inventory[1, :, i] .= expected_storage(demand, int2vec(traceback_actions[1,i], env.N, env.M))
-    end
-    #recursion steps
-    for t in 2:env.T-1
-        for i in 1:action_space
-            R[t, i], traceback_actions[t, i] = findmin([step_cost(env, demand, inventory[t-1, :, x], int2vec(x, env.N, env.M), int2vec(i, env.N, env.M), t) + R[t-1, x]
-                for x in 1:action_space])
-            inventory[t, :, i] .= (inventory[t-1, :, traceback_actions[t, i]] .+ expected_storage(demand, int2vec(traceback_actions[t,i], env.N, env.M)))
-        end
-    end
-
-    #traceback
-    optimal_actions = zeros(Int, env.T)
-    optimal_cost, optimal_actions[end] = findmin(R[end, :])
-    for t in env.T:-1:2
-        optimal_actions[t-1] = traceback_actions[t-1, optimal_actions[t]]
-    end
-    return optimal_cost, map(x->int2vec(x, env.N, env.M), optimal_actions)
+function mc_step!(env, agent, demand, machine, time)
+    r = rand(collect(1:env.N))
+    set_action!(agent, r, machine, time)
+    return nothing
 end
 
-    
+
+function mc_sweep!(env, agent, demand)
+    for m ∈ 1:env.M
+        for t ∈ 1:env.T
+            mc_step!(env, agent, demand, m, t)
+        end
+    end
+    return expected_total_cost(env, agent, demand)
+end
+
+
+function annealing!(env, agent, demand, β)
+    agent_old = deepcopy(agent)
+    cost = expected_total_cost(env, agent, demand)
+    Δcost = mc_sweep!(env, agent, demand) - cost
+    r = rand()
+    if exp(β*Δcost) <= r
+        return agent
+    end
+    return agent_old
+end
+
+
+function annealing_schedule!(env, agent, demand, βschedule)
+    ag = deepcopy(agent)
+    costs = zeros(length(βschedule))
+    for (i,β) ∈ pairs(βschedule)
+        ag = annealing!(env, ag, demand, β)
+        costs[i] = expected_total_cost(env, ag, demand)
+    end
+    return ag, costs
+end
