@@ -21,10 +21,31 @@ function mc_sweep!(env, agent, demand, β)
 end
 
 
+function mc_rand_sweep!(env, agent, demand, β)
+    for m ∈ 1:env.M
+        for t ∈ 1:env.T
+            m_rand = rand(1:env.M)
+            t_rand = rand(1:env.T)
+            mc_step!(env, agent, demand, m_rand, t_rand, β)
+        end
+    end
+    return expected_total_cost(env, agent, demand)
+end
+
+
 function annealing!(env, agent, demand, βschedule)
     costs = zeros(length(βschedule))
     for (i,β) ∈ pairs(βschedule)
         costs[i] = mc_sweep!(env, agent, demand, β)
+    end
+    return costs
+end
+
+
+function rand_annealing!(env, agent, demand, βschedule)
+    costs = zeros(length(βschedule))
+    for (i,β) ∈ pairs(βschedule)
+        costs[i] = mc_rand_sweep!(env, agent, demand, β)
     end
     return costs
 end
