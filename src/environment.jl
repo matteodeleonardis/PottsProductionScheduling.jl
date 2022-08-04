@@ -10,8 +10,8 @@ end
 
 function randomEnvironment(time_horizon::Int, machines::Int, goods::Int, switching_cost::Float64, coupling::Float64)
     return Environment(time_horizon, machines, goods, 
-        randn(goods, time_horizon), 
-        fill(switching_cost, goods, goods, time_horizon-1), 
-        fill(coupling, goods, goods, time_horizon), 
-        randn(goods, time_horizon)) 
+        rand(Exponential(0.5), goods, time_horizon), 
+        fill(switching_cost, goods, goods, time_horizon-1) .-cat([switching_cost*Matrix(I, goods, goods) for t ∈ 1:time_horizon-1]..., dims=3), 
+        cat([coupling*Matrix(I, goods, goods) for t ∈ 1:time_horizon]..., dims=3), 
+        rand(Exponential(0.7), goods, time_horizon)) 
 end
